@@ -131,6 +131,8 @@ typedef struct
     int SEM_SEG_Height;         
     int POSE_EST_Width;        
     int POSE_EST_Height; 
+    //New
+    int MMAP_Contingency_enable;
 
 }st_customize_t;
 

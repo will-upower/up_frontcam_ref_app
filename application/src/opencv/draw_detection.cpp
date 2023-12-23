@@ -455,7 +455,7 @@ int process_yuv(void *inImage, Mat &outimg, int plane) {
 
     static uint32_t det_que_rcv =0;
 #if(CDNN)
-    if(true == g_customize.CDNN_Enable)
+    if((true == g_customize.CDNN_Enable) || (true == g_customize.MMAP_Contingency_enable))
     {
         //TODO chek the hadle is proper after AI implementation
         e_osal_return_t osal_ret = R_OSAL_MqReceiveForTimePeriod(g_mq_handle_aiactivity, TIMEOUT_MS, 

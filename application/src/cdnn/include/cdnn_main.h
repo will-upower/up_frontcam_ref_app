@@ -74,4 +74,6 @@ void inferencePreprocess_ss();
 void inferencePreprocess_od();
 void inferencePostprocess_ss(signed char * data);
 void inferencePostprocess_od(signed char * data);
+//New
+int R_CDNN_Execute_MMAP();
 #endif /* CDNN_MAIN_H */

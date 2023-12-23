@@ -211,7 +211,8 @@ void R_CustomizeInit(st_customize_t *custom_param)
     custom_param->SEM_SEG_Height              = 256;
     custom_param->POSE_EST_Width              = 224;
     custom_param->POSE_EST_Height             = 224;
-
+//New
+    custom_param->MMAP_Contingency_enable     = 0;
 }
 /**********************************************************************************************************************
  End of function  R_CustomizeInit
@@ -304,11 +305,13 @@ int R_CustomizeLoad(st_customize_t *custom_param, const char *file_name)
         sscanf(buf, "CDNN_Load_Enable %d", &custom_param->CDNN_Load_Enable);
 #endif
         sscanf(buf, "OBJ_DET_Width %d", &custom_param->OBJ_DET_Width);
-        sscanf(buf, "OBJ_DET_Height %d", &custom_param->OBJ_DET_Height);    
+        sscanf(buf, "OBJ_DET_Height %d", &custom_param->OBJ_DET_Height);
         sscanf(buf, "SEM_SEG_Width %d", &custom_param->SEM_SEG_Width);
         sscanf(buf, "SEM_SEG_Height %d", &custom_param->SEM_SEG_Height);
         sscanf(buf, "POSE_EST_Width %d", &custom_param->POSE_EST_Width);
         sscanf(buf, "POSE_EST_Height %d", &custom_param->POSE_EST_Height);
+        //New
+        sscanf(buf, "MMAP_Contingency_enable %d", &custom_param->MMAP_Contingency_enable);
     }
 
 
@@ -549,6 +552,8 @@ printf("FC V4H PIPE-LINE \n");
     printf("SEM_SEG_Height              : %d \n", custom_param->SEM_SEG_Height);
     printf("POSE_EST_Width              : %d \n", custom_param->POSE_EST_Width);
     printf("POSE_EST_Height             : %d \n", custom_param->POSE_EST_Height);
+    //new
+    printf("MMAP_Contingency_enable     : %d \n", custom_param->MMAP_Contingency_enable);
     printf("-------------------------------\n");
     return 0;
 

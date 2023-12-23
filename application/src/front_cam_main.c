@@ -255,6 +255,14 @@ int main(int argc, char * argv[])
             g_customize.VOUT_Display_Height = DISPLAY_HEIGHT;
         }
 
+        if (true == g_customize.MMAP_Contingency_enable)  /* Disable native CDNN/CNN Functionality */
+        {
+            g_customize.CDNN_Enable = 0;
+            g_customize.OBJ_DET_Enable = 0;
+            g_customize.SEM_SEG_Enable = 0;
+            g_customize.POSE_EST_Enable = 0;
+        }
+
         R_CustomizePrint(&g_customize);            /* Print customization parameters */
 
         ret = R_CustomizeValidate(&g_customize);   /* Customization parameter validation */
@@ -527,7 +535,7 @@ re-run the application\n FC App terminating...\n ");
         }
 
 #if(CDNN)
-        if(true == g_customize.CDNN_Enable)
+        if((true == g_customize.CDNN_Enable) || (true == g_customize.MMAP_Contingency_enable))
         {
             osal_ret = R_OSAL_ThreadCreate(&ai_thrd_cfg, 0xf001, &ai_thrd_hndl);
             if (OSAL_RETURN_OK != osal_ret)
@@ -586,7 +594,7 @@ re-run the application\n FC App terminating...\n ");
 
         /*Wait until Inference Thread*/
 #if (CDNN)
-        if(true == g_customize.CDNN_Enable)
+        if((true == g_customize.CDNN_Enable) || (true == g_customize.MMAP_Contingency_enable))
 
         {
             osal_ret = R_OSAL_ThreadJoin(ai_thrd_hndl, &ai_thrd_return_value);
@@ -1695,10 +1703,10 @@ int get_syncstatus(e_fc_module_t module, int flow)
 
         case eIMR_RS:
             #if(CDNN)
-            if (true == g_customize.CDNN_Enable)
+            if((true == g_customize.CDNN_Enable) || (true == g_customize.MMAP_Contingency_enable))
             {
                 status = g_ai_done;
-            }
+            } 
             #endif
             break;
         }
@@ -2295,7 +2303,7 @@ static int64_t syncflow_enable(e_fc_module_t module)
 
         case eIMR_RS:
             #if(CDNN)
-            if (true == g_customize.CDNN_Enable)
+            if((true == g_customize.CDNN_Enable) || (true == g_customize.MMAP_Contingency_enable))
             {
                 g_ai_done = 1;
             }

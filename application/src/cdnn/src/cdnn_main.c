@@ -1177,3 +1177,55 @@ void Conv_YUYV2RGB(unsigned char * yuyv, unsigned char * bgr, int width, int hei
         }
     }
 }
+
+
+//New
+#include <string.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <unistd.h>
+int R_CDNN_Execute_MMAP() {
+    //gp_ai_rgb_buffer, g_customize.IMR_Resize_Width_Ch_0 * g_customize.IMR_Resize_Height_Ch_0 * BPP_RGB
+    
+    //Do preprocess, yuv2rgb, resize with imr, etc...
+    Conv_YUYV2RGB(get_imr_resize_buffer(g_sem_seg_map_ch), gp_ai_rgb_buffer, g_customize.IMR_Resize_Width_Ch_0, g_customize.IMR_Resize_Height_Ch_0);
+    //inferencePreprocess_ss();
+
+    //MMAP out the preprocessed image
+    int file = open(MMAP_OUT, O_RDWR | O_CREAT | O_TRUNC, (mode_t)0600);
+    //lock file
+    size_t size = g_customize.IMR_Resize_Width_Ch_0 * g_customize.IMR_Resize_Height_Ch_0 * BPP_RGB;
+    if (file == -1) {
+        perror("Error opening file");
+        return(FAILED);
+    }
+    if (ftruncate(file, size) == -1) {
+        perror("Error truncating file");
+        close(file);
+        return(FAILED);
+    }
+    unsigned char *mapped_buffer_out = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, file, 0);
+    if (mapped_buffer_out == MAP_FAILED) {
+        perror("Error mapping file to memory");
+        close(file);
+        return(FAILED);
+    }
+    memcpy(mapped_buffer_out, gp_ai_rgb_buffer, size);
+    if (munmap(mapped_buffer_out, size) == -1) {
+        perror("Error unmapping file");
+        close(file);
+        return(FAILED);
+    }
+    if (munmap(mapped_buffer_out, size) == -1) {
+        perror("Error unmapping file");
+        return FAILED;
+    }
+    //unlock file
+    close(file);
+
+    //External program mmaps the data in and runs inference. Then it mmaps the data to MMAP_IN
+
+
+
+    return SUCCESS;
+}
