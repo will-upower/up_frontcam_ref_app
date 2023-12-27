@@ -31,6 +31,10 @@ set(RCAR_SOC "v4h2")
 
 project(${app_name})
 
+# ROS2 Dependencies
+find_package(ament_cmake_auto REQUIRED)
+find_package(OpenCV REQUIRED)
+ament_auto_find_build_dependencies()
 
 #----------------------------------------------------------------------------------------------------------------------
 # R-Car xOS SoC/Board selection
@@ -486,3 +490,30 @@ if(RCAR_SOC STREQUAL "v4h2")
         endif()
     endif()
  endif()
+
+ set(UPower_FRONTCAM_HEADERS
+    include/up_frontcam_ref_app_node.hpp
+)
+
+ ament_auto_add_library($(PROJECT_NAME) SHARED
+    ${source}
+    ${header}
+    ${include_dir}
+    src/up_frontcam_ref_app_node.cpp
+ )
+
+ target_include_directories(${PROJECT_NAME} PRIVATE
+    ${OpenCV_INCLUDE_DIRS}
+ )
+
+ rclcpp_components_register_node(${PROJECT_NAME}_node
+    PLUGIN "upower::UpFrontCamRefAppNode"
+    EXECUTABLE ${PROJECT_NAME}_node_exe
+ )
+
+
+ ament_auto_package()
+
+
+
+
